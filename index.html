@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Vocabulary Builder | Auto-Refresh Every 72h</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --primary: #4a6cf7;
+            --primary-dark: #3651d5;
+            --accent: #f59e0b;
+            --accent-dark: #d97706;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+            --success: #10b981;
+            --danger: #ef4444;
+            --radius: 14px;
+            --radius-sm: 8px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #eef2ff 0%, #f0f4ff 30%, #fdf2f8 70%, #fefce8 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.6;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 24px 16px 12px;
+        }
+        .header .logo-icon {
+            font-size: 3rem;
+            margin-bottom: 4px;
+        }
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #4a6cf7, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-top: 2px;
+        }
+        .ielts-badge {
+            display: inline-block;
+            background: #1e293b;
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.04em;
+            margin-top: 8px;
+        }
+        .ielts-badge span {
+            color: var(--accent);
+        }
+
+        /* Update banner */
+        .update-banner {
+            background: #fff7ed;
+            border: 1px solid #fdba74;
+            border-radius: var(--radius-sm);
+            padding: 10px 20px;
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow);
+        }
+        .update-banner .deck-info {
+            font-weight: 700;
+            color: #c2410c;
+        }
+        .update-banner .timer {
+            background: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid #fdba74;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 16px 0;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-sm);
+            padding: 12px 18px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            min-width: 80px;
+            flex: 1;
+            max-width: 140px;
+            border: 1px solid var(--border);
+        }
+        .stat-card .stat-num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .stat-card .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .stat-card.mastered .stat-num {
+            color: var(--success);
+        }
+        .stat-card.learning .stat-num {
+            color: var(--accent);
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+        .cat-tab {
+            padding: 9px 16px;
+            border-radius: 24px;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            white-space: nowrap;
+            color: var(--text-light);
+            user-select: none;
+        }
+        .cat-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(74, 108, 247, 0.15);
+        }
+        .cat-tab.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 14px rgba(74, 108, 247, 0.35);
+        }
+        .cat-tab .cat-emoji {
+            margin-right: 5px;
+        }
+
+        .search-wrap {
+            position: relative;
+            max-width: 450px;
+            margin: 0 auto 20px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 44px 12px 18px;
+            border-radius: 28px;
+            border: 2px solid var(--border);
+            font-size: 0.95rem;
+            background: var(--card-bg);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            outline: none;
+        }
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(74, 108, 247, 0.1);
+        }
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .flashcard-section {
+            perspective: 1200px;
+            margin: 20px auto 28px;
+            max-width: 500px;
+            height: 240px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flashcard-inner.flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+        .flashcard-front {
+            background: #ffffff;
+            z-index: 2;
+        }
+        .flashcard-back {
+            background: #fefce8;
+            transform: rotateY(180deg);
+            border: 2px solid var(--accent);
+        }
+        .flashcard-word {
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: var(--primary-dark);
+            text-align: center;
+        }
+        .flashcard-phonetic {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-top: 4px;
+            font-style: italic;
+        }
+        .flashcard-hint {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 12px;
+            letter-spacing: 0.03em;
+        }
+        .flashcard-definition {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            color: #92400e;
+        }
+        .flashcard-example {
+            font-size: 0.9rem;
+            color: #78716c;
+            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
+        }
+        .flashcard-synonyms {
+            margin-top: 10px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .synonym-tag {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+        .card-category-badge {
+            position: absolute;
+            top: 14px;
+            left: 18px;
+            font-size: 0.7rem;
+            background: #eef2ff;
+            color: #4a6cf7;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .card-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+        .nav-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+        }
+        .nav-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 4px 14px rgba(74, 108, 247, 0.2);
+        }
+        .nav-btn:active {
+            transform: scale(0.94);
+        }
+        .card-counter {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10px 0 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 24px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(74, 108, 247, 0.3);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 108, 247, 0.4);
+        }
+        .btn-outline {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .btn-accent {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+        }
+        .btn-accent:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            border-radius: 18px;
+        }
+
+        .word-list-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-top: 8px;
+        }
+        .word-list-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafbfc;
+        }
+        .word-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        .word-table th {
+            background: #f8fafc;
+            padding: 11px 14px;
+            text-align: left;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-light);
+            border-bottom: 2px solid var(--border);
+            font-weight: 700;
+        }
+        .word-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+        .word-table tr {
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .word-table tbody tr:hover {
+            background: #f8faff;
+        }
+        .word-table .word-cell {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .word-table .cat-cell {
+            font-size: 0.7rem;
+            background: #eef2ff;
+            color: #4a6cf7;
+            padding: 3px 9px;
+            border-radius: 10px;
+            display: inline-block;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .difficulty-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 2px;
+        }
+        .dot-easy {
+            background: #10b981;
+        }
+        .dot-medium {
+            background: #f59e0b;
+        }
+        .dot-hard {
+            background: #ef4444;
+        }
+
+        .quiz-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 24px;
+            margin: 20px 0;
+            border: 2px solid #eef2ff;
+            text-align: center;
+        }
+        .quiz-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+        .quiz-word {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin: 8px 0;
+        }
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            max-width: 440px;
+            margin: 16px auto;
+        }
+        .quiz-option {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border);
+            background: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: #f8faff;
+        }
+        .quiz-option.correct {
+            border-color: var(--success) !important;
+            background: #d1fae5 !important;
+            color: #065f46 !important;
+        }
+        .quiz-option.wrong {
+            border-color: var(--danger) !important;
+            background: #fee2e2 !important;
+            color: #991b1b !important;
+        }
+        .quiz-feedback {
+            font-weight: 700;
+            margin-top: 10px;
+            min-height: 24px;
+            font-size: 0.95rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: #1e293b;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 28px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 999;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .flashcard-section {
+                height: 200px;
+                max-width: 100%;
+            }
+            .flashcard-word {
+                font-size: 1.7rem;
+            }
+            .flashcard-definition {
+                font-size: 1.1rem;
+            }
+            .word-table th,
+            .word-table td {
+                padding: 8px 6px;
+                font-size: 0.75rem;
+            }
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+            .stats-bar {
+                gap: 6px;
+            }
+            .stat-card {
+                padding: 8px 10px;
+                min-width: 60px;
+            }
+            .stat-card .stat-num {
+                font-size: 1.2rem;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .cat-tab {
+                padding: 7px 11px;
+                font-size: 0.75rem;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+        .empty-state .emoji {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-icon">📚</div>
+            <h1>IELTS Vocabulary Builder</h1>
+            <p class="subtitle">Master essential words · Auto‑refreshes every 72 hours</p>
+            <div class="ielts-badge">BAND <span>7+</span> TARGET</div>
+        </header>
+
+        <!-- Auto-update info -->
+        <div class="update-banner" id="updateBanner">
+            <span class="deck-info">📦 Current Deck: <span id="deckNumber">1</span>/5</span>
+            <span class="timer">⏳ Next update in: <strong id="countdown">--:--:--</strong></span>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-num" id="totalWords">0</div>
+                <div class="stat-label">Total Words</div>
+            </div>
+            <div class="stat-card mastered">
+                <div class="stat-num" id="masteredCount">0</div>
+                <div class="stat-label">Mastered</div>
+            </div>
+            <div class="stat-card learning">
+                <div class="stat-num" id="learningCount">0</div>
+                <div class="stat-label">Learning</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="quizScore">-</div>
+                <div class="stat-label">Quiz Score</div>
+            </div>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs">
+            <button class="cat-tab active" data-category="all"><span class="cat-emoji">📋</span> All</button>
+            <button class="cat-tab" data-category="education"><span class="cat-emoji">🎓</span> Education</button>
+            <button class="cat-tab" data-category="environment"><span class="cat-emoji">🌍</span> Environment</button>
+            <button class="cat-tab" data-category="technology"><span class="cat-emoji">💻</span> Technology</button>
+            <button class="cat-tab" data-category="health"><span class="cat-emoji">🏥</span> Health</button>
+            <button class="cat-tab" data-category="society"><span class="cat-emoji">🏛️</span> Society</button>
+            <button class="cat-tab" data-category="work"><span class="cat-emoji">💼</span> Work</button>
+        </div>
+
+        <div class="search-wrap">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search words... (e.g., 'significant')">
+            <span class="search-icon">🔎</span>
+        </div>
+
+        <div class="flashcard-section" id="flashcardContainer" title="Click to flip">
+            <div class="flashcard-inner" id="flashcardInner">
+                <div class="flashcard-front">
+                    <span class="card-category-badge" id="cardCategoryBadge">Education</span>
+                    <span class="flashcard-word" id="flashcardWord">significant</span>
+                    <span class="flashcard-phonetic" id="flashcardPhonetic">/sɪɡˈnɪf.ɪ.kənt/</span>
+                    <span class="flashcard-hint">👆 Tap to reveal definition</span>
+                </div>
+                <div class="flashcard-back">
+                    <span class="flashcard-definition" id="flashcardDefinition">important or noticeable</span>
+                    <span class="flashcard-example" id="flashcardExample">"There has been a significant increase in..."</span>
+                    <div class="flashcard-synonyms" id="flashcardSynonyms">
+                        <span class="synonym-tag">important</span>
+                        <span class="synonym-tag">notable</span>
+                        <span class="synonym-tag">considerable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-nav">
+            <button class="nav-btn" id="prevCardBtn" aria-label="Previous word">◀</button>
+            <span class="card-counter" id="cardCounter">1 / 30</span>
+            <button class="nav-btn" id="nextCardBtn" aria-label="Next word">▶</button>
+            <button class="nav-btn" id="shuffleBtn" aria-label="Shuffle" title="Shuffle">🔀</button>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="markMasteredBtn">✅ Mark as Mastered</button>
+            <button class="btn btn-outline" id="resetMasteredBtn">🔄 Reset Progress</button>
+            <button class="btn btn-accent" id="startQuizBtn">🎯 Quick Quiz</button>
+        </div>
+
+        <div class="quiz-section" id="quizSection" style="display:none;">
+            <h3>🎯 Quick Quiz</h3>
+            <p style="color:#64748b;font-size:0.85rem;">Choose the correct definition:</p>
+            <div class="quiz-word" id="quizWord"></div>
+            <div class="quiz-options" id="quizOptions"></div>
+            <p class="quiz-feedback" id="quizFeedback"></p>
+            <button class="btn btn-primary btn-sm" id="nextQuizBtn" style="display:none;">Next Question ➡</button>
+            <button class="btn btn-outline btn-sm" id="closeQuizBtn" style="margin-top:8px;">Close Quiz</button>
+        </div>
+
+        <div class="word-list-section">
+            <div class="word-list-header">
+                <span>📖 Word List</span>
+                <span style="font-weight:400;font-size:0.8rem;color:#64748b;" id="filteredCount">Showing 30 words</span>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="word-table">
+                    <thead>
+                        <tr>
+                            <th>Word</th>
+                            <th>Definition</th>
+                            <th>Category</th>
+                            <th>Level</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wordTableBody"></tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <span class="emoji">🔍</span>
+                <p>No words found. Try a different search or category.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        (function() {
+            // ─────────────────────────────────────
+            // 5 DECKS OF IELTS VOCABULARY (30 words each)
+            // ─────────────────────────────────────
+            const deck1 = [
+                { word: "significant", phonetic: "/sɪɡˈnɪf.ɪ.kənt/", definition: "Important or noticeable; having meaning", example: "There has been a significant improvement in test scores.", synonyms: ["important", "notable", "considerable", "meaningful"], category: "education", difficulty: "medium" },
+                { word: "curriculum", phonetic: "/kəˈrɪk.jə.ləm/", definition: "The subjects studied in a school or course", example: "The school updated its curriculum to include digital skills.", synonyms: ["syllabus", "program", "course of study"], category: "education", difficulty: "medium" },
+                { word: "proficiency", phonetic: "/prəˈfɪʃ.ən.si/", definition: "A high degree of skill or ability", example: "She demonstrated proficiency in three languages.", synonyms: ["competence", "expertise", "mastery", "skill"], category: "education", difficulty: "hard" },
+                { word: "pedagogy", phonetic: "/ˈped.ə.ɡɒdʒ.i/", definition: "The method and practice of teaching", example: "Modern pedagogy emphasizes student-centered learning.", synonyms: ["teaching methods", "instruction", "education theory"], category: "education", difficulty: "hard" },
+                { word: "literacy", phonetic: "/ˈlɪt.ər.ə.si/", definition: "The ability to read and write", example: "Improving adult literacy is a national priority.", synonyms: ["reading ability", "education", "learning"], category: "education", difficulty: "easy" },
+                { word: "sustainable", phonetic: "/səˈsteɪ.nə.bəl/", definition: "Able to continue without damaging the environment", example: "We need sustainable solutions for energy production.", synonyms: ["eco-friendly", "renewable", "viable", "green"], category: "environment", difficulty: "medium" },
+                { word: "biodiversity", phonetic: "/ˌbaɪ.əʊ.daɪˈvɜː.sə.ti/", definition: "The variety of plant and animal life in an area", example: "The rainforest is home to incredible biodiversity.", synonyms: ["ecological variety", "species richness", "natural diversity"], category: "environment", difficulty: "hard" },
+                { word: "conservation", phonetic: "/ˌkɒn.səˈveɪ.ʃən/", definition: "The protection and preservation of nature", example: "Wildlife conservation efforts have saved many species.", synonyms: ["preservation", "protection", "safeguarding"], category: "environment", difficulty: "easy" },
+                { word: "emissions", phonetic: "/ɪˈmɪʃ.ənz/", definition: "Gases released into the air, especially by vehicles", example: "Carbon emissions must be reduced to fight climate change.", synonyms: ["pollutants", "discharges", "exhaust"], category: "environment", difficulty: "medium" },
+                { word: "ecosystem", phonetic: "/ˈiː.kəʊ.sɪs.təm/", definition: "A community of living things and their environment", example: "Coral reefs are fragile ecosystems threatened by warming seas.", synonyms: ["habitat", "biome", "environment", "natural system"], category: "environment", difficulty: "medium" },
+                { word: "innovation", phonetic: "/ˌɪn.əˈveɪ.ʃən/", definition: "A new idea, method, or product", example: "Technological innovation drives economic growth.", synonyms: ["invention", "breakthrough", "advancement", "novelty"], category: "technology", difficulty: "medium" },
+                { word: "automation", phonetic: "/ˌɔː.təˈmeɪ.ʃən/", definition: "Using machines to do work previously done by people", example: "Automation has transformed the manufacturing industry.", synonyms: ["mechanization", "robotization", "computerization"], category: "technology", difficulty: "hard" },
+                { word: "digital", phonetic: "/ˈdɪdʒ.ɪ.təl/", definition: "Relating to electronic technology or computers", example: "Digital literacy is essential in today's job market.", synonyms: ["electronic", "computerized", "online", "virtual"], category: "technology", difficulty: "easy" },
+                { word: "cybersecurity", phonetic: "/ˌsaɪ.bə.sɪˈkjʊə.rə.ti/", definition: "Protection of computer systems from theft or damage", example: "Companies invest heavily in cybersecurity measures.", synonyms: ["online security", "data protection", "IT security"], category: "technology", difficulty: "hard" },
+                { word: "artificial intelligence", phonetic: "/ˌɑːr.tɪ.fɪʃ.əl ɪnˈtel.ɪ.dʒəns/", definition: "Computer systems that can perform tasks requiring human intelligence", example: "Artificial intelligence is reshaping healthcare and finance.", synonyms: ["AI", "machine learning", "smart systems"], category: "technology", difficulty: "hard" },
+                { word: "nutrition", phonetic: "/njuːˈtrɪʃ.ən/", definition: "The process of taking in food for health and growth", example: "Good nutrition is vital for children's development.", synonyms: ["diet", "nourishment", "sustenance"], category: "health", difficulty: "easy" },
+                { word: "chronic", phonetic: "/ˈkrɒn.ɪk/", definition: "Long-lasting and persistent (of an illness)", example: "Chronic diseases like diabetes require ongoing management.", synonyms: ["persistent", "long-term", "recurring", "prolonged"], category: "health", difficulty: "medium" },
+                { word: "epidemic", phonetic: "/ˌep.ɪˈdem.ɪk/", definition: "A widespread occurrence of a disease in a community", example: "The obesity epidemic is a major public health concern.", synonyms: ["outbreak", "pandemic", "plague", "widespread disease"], category: "health", difficulty: "medium" },
+                { word: "sedentary", phonetic: "/ˈsed.ən.tər.i/", definition: "Involving little physical activity", example: "A sedentary lifestyle increases the risk of heart disease.", synonyms: ["inactive", "sitting", "immobile", "desk-bound"], category: "health", difficulty: "hard" },
+                { word: "mental health", phonetic: "/ˈmen.təl helθ/", definition: "A person's emotional and psychological well-being", example: "Employers are increasingly aware of mental health issues.", synonyms: ["psychological well-being", "emotional health", "wellness"], category: "health", difficulty: "easy" },
+                { word: "urbanization", phonetic: "/ˌɜː.bən.aɪˈzeɪ.ʃən/", definition: "The growth of cities as people move from rural areas", example: "Rapid urbanization poses challenges for infrastructure.", synonyms: ["city growth", "metropolitan expansion", "urban development"], category: "society", difficulty: "hard" },
+                { word: "inequality", phonetic: "/ˌɪn.ɪˈkwɒl.ə.ti/", definition: "Unfair differences between groups of people", example: "Income inequality has widened in many countries.", synonyms: ["disparity", "imbalance", "unfairness", "gap"], category: "society", difficulty: "medium" },
+                { word: "demographic", phonetic: "/ˌdem.əˈɡræf.ɪk/", definition: "Relating to the structure of populations", example: "Demographic changes affect housing and healthcare demand.", synonyms: ["population-related", "statistical", "census"], category: "society", difficulty: "hard" },
+                { word: "multicultural", phonetic: "/ˌmʌl.tiˈkʌl.tʃər.əl/", definition: "Including people from many different cultures", example: "London is one of the most multicultural cities in the world.", synonyms: ["diverse", "cosmopolitan", "pluralistic", "inclusive"], category: "society", difficulty: "easy" },
+                { word: "globalization", phonetic: "/ˌɡləʊ.bəl.aɪˈzeɪ.ʃən/", definition: "The process of the world becoming more interconnected", example: "Globalization has increased trade and cultural exchange.", synonyms: ["internationalization", "integration", "interconnectedness"], category: "society", difficulty: "medium" },
+                { word: "entrepreneur", phonetic: "/ˌɒn.trə.prəˈnɜːr/", definition: "A person who starts and runs a business", example: "The entrepreneur launched a successful tech startup.", synonyms: ["business owner", "founder", "innovator", "tycoon"], category: "work", difficulty: "medium" },
+                { word: "collaboration", phonetic: "/kəˌlæb.əˈreɪ.ʃən/", definition: "Working together to achieve a shared goal", example: "The project succeeded thanks to effective collaboration.", synonyms: ["teamwork", "cooperation", "partnership", "alliance"], category: "work", difficulty: "easy" },
+                { word: "remuneration", phonetic: "/rɪˌmjuː.nərˈeɪ.ʃən/", definition: "Payment for work or services", example: "The position offers competitive remuneration and benefits.", synonyms: ["salary", "compensation", "wages", "earnings"], category: "work", difficulty: "hard" },
+                { word: "productivity", phonetic: "/ˌprɒd.ʌkˈtɪv.ə.ti/", definition: "The rate at which goods are produced or work is done", example: "Flexible working hours can boost employee productivity.", synonyms: ["efficiency", "output", "performance", "yield"], category: "work", difficulty: "medium" },
+                { word: "vocational", phonetic: "/vəʊˈkeɪ.ʃən.əl/", definition: "Relating to skills needed for a particular job", example: "Vocational training prepares students for specific careers.", synonyms: ["career-oriented", "professional", "technical", "practical"], category: "work", difficulty: "hard" }
+            ];
+
+            const deck2 = [
+                { word: "scholarship", phonetic: "/ˈskɒl.ə.ʃɪp/", definition: "A grant of money for a student to study", example: "She won a scholarship to study abroad.", synonyms: ["grant", "award", "bursary", "funding"], category: "education", difficulty: "easy" },
+                { word: "plagiarism", phonetic: "/ˈpleɪ.dʒər.ɪ.zəm/", definition: "Using someone else's work without giving credit", example: "Universities take plagiarism very seriously.", synonyms: ["copying", "infringement", "theft", "piracy"], category: "education", difficulty: "hard" },
+                { word: "cognitive", phonetic: "/ˈkɒɡ.nə.tɪv/", definition: "Related to mental processes like thinking and learning", example: "Cognitive development is crucial in early childhood.", synonyms: ["mental", "intellectual", "brain-based"], category: "education", difficulty: "hard" },
+                { word: "thesis", phonetic: "/ˈθiː.sɪs/", definition: "A long piece of writing on a particular subject", example: "She is writing her thesis on renewable energy.", synonyms: ["dissertation", "paper", "essay", "research"], category: "education", difficulty: "medium" },
+                { word: "tuition", phonetic: "/tjuːˈɪʃ.ən/", definition: "The money paid for instruction at a school or university", example: "Tuition fees have risen significantly.", synonyms: ["fees", "cost", "charges", "instruction cost"], category: "education", difficulty: "easy" },
+                { word: "deforestation", phonetic: "/diːˌfɒr.ɪˈsteɪ.ʃən/", definition: "The cutting down of trees in a large area", example: "Deforestation contributes to climate change.", synonyms: ["forest clearing", "logging", "tree removal"], category: "environment", difficulty: "medium" },
+                { word: "renewable", phonetic: "/rɪˈnjuː.ə.bəl/", definition: "Energy that can be replaced naturally", example: "Solar and wind are renewable energy sources.", synonyms: ["sustainable", "green", "inexhaustible"], category: "environment", difficulty: "easy" },
+                { word: "carbon footprint", phonetic: "/ˌkɑː.bən ˈfʊt.prɪnt/", definition: "The amount of CO₂ emissions caused by a person or activity", example: "We should all try to reduce our carbon footprint.", synonyms: ["emission level", "environmental impact", "CO₂ output"], category: "environment", difficulty: "medium" },
+                { word: "habitat", phonetic: "/ˈhæb.ɪ.tæt/", definition: "The natural home of a plant or animal", example: "Polar bears are losing their habitat due to melting ice.", synonyms: ["environment", "territory", "surroundings", "ecosystem"], category: "environment", difficulty: "easy" },
+                { word: "pollutant", phonetic: "/pəˈluː.tənt/", definition: "A substance that makes air, water, or soil dirty", example: "Factories release pollutants into the atmosphere.", synonyms: ["contaminant", "toxin", "impurity"], category: "environment", difficulty: "medium" },
+                { word: "bandwidth", phonetic: "/ˈbænd.wɪdθ/", definition: "The amount of data that can be transmitted in a fixed time", example: "Video streaming requires a lot of bandwidth.", synonyms: ["capacity", "speed", "data rate"], category: "technology", difficulty: "medium" },
+                { word: "algorithm", phonetic: "/ˈæl.ɡə.rɪð.əm/", definition: "A set of rules for solving a problem in computing", example: "Social media platforms use algorithms to recommend content.", synonyms: ["procedure", "formula", "program", "code"], category: "technology", difficulty: "hard" },
+                { word: "encryption", phonetic: "/ɪnˈkrɪp.ʃən/", definition: "The process of converting data into a code to prevent access", example: "Encryption is vital for secure online transactions.", synonyms: ["encoding", "ciphering", "scrambling", "security"], category: "technology", difficulty: "hard" },
+                { word: "interface", phonetic: "/ˈɪn.tə.feɪs/", definition: "A point where two systems or devices meet and interact", example: "The app has a user‑friendly interface.", synonyms: ["connection", "link", "dashboard", "platform"], category: "technology", difficulty: "easy" },
+                { word: "bandwidth", phonetic: "/ˈbænd.wɪdθ/", definition: "The capacity of a network to transmit data", example: "High bandwidth is essential for teleconferencing.", synonyms: ["data transfer rate", "capacity", "speed"], category: "technology", difficulty: "medium" },
+                { word: "diagnosis", phonetic: "/ˌdaɪ.əɡˈnəʊ.sɪs/", definition: "The identification of a disease or problem", example: "Early diagnosis can save lives.", synonyms: ["identification", "detection", "analysis"], category: "health", difficulty: "medium" },
+                { word: "vaccination", phonetic: "/ˌvæk.sɪˈneɪ.ʃən/", definition: "Giving a vaccine to protect against disease", example: "Vaccination programs have eradicated smallpox.", synonyms: ["immunization", "inoculation", "shot"], category: "health", difficulty: "easy" },
+                { word: "symptom", phonetic: "/ˈsɪmp.təm/", definition: "A sign of an illness or condition", example: "Common symptoms include fever and cough.", synonyms: ["indication", "sign", "manifestation"], category: "health", difficulty: "easy" },
+                { word: "therapy", phonetic: "/ˈθer.ə.pi/", definition: "Treatment intended to relieve or heal a disorder", example: "Physical therapy helped her recover from the injury.", synonyms: ["treatment", "rehabilitation", "cure", "remedy"], category: "health", difficulty: "medium" },
+                { word: "obesity", phonetic: "/əʊˈbiː.sə.ti/", definition: "The condition of being very overweight", example: "Obesity rates are rising in many countries.", synonyms: ["overweight", "corpulence", "excess weight"], category: "health", difficulty: "medium" },
+                { word: "migration", phonetic: "/maɪˈɡreɪ.ʃən/", definition: "Movement of people from one place to another", example: "Rural‑to‑urban migration is common in developing nations.", synonyms: ["relocation", "movement", "immigration", "exodus"], category: "society", difficulty: "easy" },
+                { word: "prejudice", phonetic: "/ˈpredʒ.ə.dɪs/", definition: "Unfair opinion formed without enough knowledge", example: "We must fight against racial prejudice.", synonyms: ["bias", "discrimination", "intolerance"], category: "society", difficulty: "medium" },
+                { word: "legislation", phonetic: "/ˌledʒ.ɪˈsleɪ.ʃən/", definition: "A law or set of laws", example: "New legislation aims to protect data privacy.", synonyms: ["law", "regulation", "act", "statute"], category: "society", difficulty: "hard" },
+                { word: "heritage", phonetic: "/ˈher.ɪ.tɪdʒ/", definition: "The traditions, achievements, and beliefs of a group", example: "Cultural heritage must be preserved for future generations.", synonyms: ["legacy", "tradition", "history", "ancestry"], category: "society", difficulty: "easy" },
+                { word: "infrastructure", phonetic: "/ˈɪn.frəˌstrʌk.tʃər/", definition: "Basic physical systems of a society (roads, bridges, etc.)", example: "Investing in infrastructure creates jobs and growth.", synonyms: ["facilities", "framework", "utilities", "foundation"], category: "society", difficulty: "hard" },
+                { word: "freelance", phonetic: "/ˈfriː.lɑːns/", definition: "Working for different companies rather than one employer", example: "Many journalists work freelance.", synonyms: ["self‑employed", "independent", "contractor"], category: "work", difficulty: "easy" },
+                { word: "networking", phonetic: "/ˈnet.wɜː.kɪŋ/", definition: "Meeting people to exchange information and contacts", example: "Networking is essential for career development.", synonyms: ["connecting", "socializing", "building relationships"], category: "work", difficulty: "easy" },
+                { word: "deadline", phonetic: "/ˈded.laɪn/", definition: "The latest time or date by which something must be done", example: "We must meet the project deadline.", synonyms: ["due date", "cutoff", "time limit", "target"], category: "work", difficulty: "easy" },
+                { word: "promotion", phonetic: "/prəˈməʊ.ʃən/", definition: "A move to a higher position or rank in a job", example: "Hard work led to her promotion to manager.", synonyms: ["advancement", "upgrade", "elevation", "rise"], category: "work", difficulty: "medium" },
+                { word: "appraisal", phonetic: "/əˈpreɪ.zəl/", definition: "A meeting to discuss an employee's performance", example: "The annual appraisal helps set new goals.", synonyms: ["evaluation", "review", "assessment", "feedback"], category: "work", difficulty: "hard" }
+            ];
+
+            const deck3 = [
+                { word: "undergraduate", phonetic: "/ˌʌn.dəˈɡrædʒ.u.ət/", definition: "A student who is studying for a first degree", example: "She is an undergraduate at the University of Toronto.", synonyms: ["student", "freshman", "sophomore", "degree candidate"], category: "education", difficulty: "easy" },
+                { word: "dissertation", phonetic: "/ˌdɪs.əˈteɪ.ʃən/", definition: "A very long essay on a particular subject", example: "He spent two years writing his doctoral dissertation.", synonyms: ["thesis", "paper", "treatise", "monograph"], category: "education", difficulty: "hard" },
+                { word: "vocational", phonetic: "/vəʊˈkeɪ.ʃən.əl/", definition: "Related to specific job skills", example: "Vocational courses prepare you for work immediately.", synonyms: ["career‑oriented", "technical", "practical", "professional"], category: "education", difficulty: "medium" },
+                { word: "illiterate", phonetic: "/ɪˈlɪt.ər.ət/", definition: "Unable to read or write", example: "Programs help illiterate adults learn basic skills.", synonyms: ["unlettered", "uneducated", "non‑reader"], category: "education", difficulty: "medium" },
+                { word: "tutorial", phonetic: "/tjuːˈtɔː.ri.əl/", definition: "A small class with a tutor", example: "We have a tutorial every Friday afternoon.", synonyms: ["seminar", "class", "workshop", "session"], category: "education", difficulty: "easy" },
+                { word: "endangered", phonetic: "/ɪnˈdeɪn.dʒəd/", definition: "At risk of becoming extinct", example: "The giant panda is an endangered species.", synonyms: ["threatened", "vulnerable", "at‑risk", "rare"], category: "environment", difficulty: "easy" },
+                { word: "fossil fuel", phonetic: "/ˈfɒs.əl ˌfjʊəl/", definition: "A natural fuel such as coal or gas", example: "Burning fossil fuels releases greenhouse gases.", synonyms: ["petroleum", "coal", "natural gas", "hydrocarbon"], category: "environment", difficulty: "easy" },
+                { word: "ozone layer", phonetic: "/ˈəʊ.zəʊn ˌleɪ.ər/", definition: "A layer in the atmosphere that protects the Earth from UV rays", example: "The ozone layer is slowly recovering.", synonyms: ["ozone shield", "stratospheric layer"], category: "environment", difficulty: "medium" },
+                { word: "recycle", phonetic: "/ˌriːˈsaɪ.kəl/", definition: "To convert waste into reusable material", example: "We recycle paper, glass, and plastic.", synonyms: ["reprocess", "reuse", "upcycle", "salvage"], category: "environment", difficulty: "easy" },
+                { word: "drought", phonetic: "/draʊt/", definition: "A long period with very little rain", example: "The drought caused severe water shortages.", synonyms: ["dry spell", "water shortage", "aridity"], category: "environment", difficulty: "medium" },
+                { word: "database", phonetic: "/ˈdeɪ.tə.beɪs/", definition: "A structured collection of information stored on a computer", example: "The company maintains a huge customer database.", synonyms: ["data bank", "repository", "archive", "record system"], category: "technology", difficulty: "easy" },
+                { word: "virtual reality", phonetic: "/ˌvɜː.tju.əl riˈæl.ə.ti/", definition: "A simulated experience that can be similar to or completely different from the real world", example: "Virtual reality is used in medical training.", synonyms: ["VR", "simulation", "immersive technology"], category: "technology", difficulty: "hard" },
+                { word: "software", phonetic: "/ˈsɒft.weər/", definition: "Programs used by a computer", example: "She installed new accounting software.", synonyms: ["application", "program", "app", "system"], category: "technology", difficulty: "easy" },
+                { word: "malware", phonetic: "/ˈmæl.weər/", definition: "Software designed to damage or gain unauthorized access", example: "Antivirus programs protect against malware.", synonyms: ["virus", "spyware", "ransomware", "trojan"], category: "technology", difficulty: "hard" },
+                { word: "upload", phonetic: "/ʌpˈləʊd/", definition: "Transfer data from a local computer to a remote system", example: "Please upload your assignment by midnight.", synonyms: ["send", "transfer", "post", "submit"], category: "technology", difficulty: "easy" },
+                { word: "prescription", phonetic: "/prɪˈskrɪp.ʃən/", definition: "An instruction written by a doctor for medicine", example: "The pharmacist filled the prescription quickly.", synonyms: ["Rx", "doctor's order", "medication order"], category: "health", difficulty: "easy" },
+                { word: "allergy", phonetic: "/ˈæl.ə.dʒi/", definition: "A harmful reaction to a substance", example: "She has a severe allergy to peanuts.", synonyms: ["sensitivity", "hypersensitivity", "reaction"], category: "health", difficulty: "easy" },
+                { word: "surgery", phonetic: "/ˈsɜː.dʒər.i/", definition: "Medical operation to repair or remove part of the body", example: "He underwent knee surgery last month.", synonyms: ["operation", "procedure", "surgical intervention"], category: "health", difficulty: "easy" },
+                { word: "addiction", phonetic: "/əˈdɪk.ʃən/", definition: "Dependence on a substance or activity", example: "Drug addiction is a serious social problem.", synonyms: ["dependency", "habit", "compulsion", "craving"], category: "health", difficulty: "medium" },
+                { word: "well‑being", phonetic: "/ˌwel ˈbiː.ɪŋ/", definition: "The state of being comfortable, healthy, or happy", example: "Exercise improves both physical and mental well‑being.", synonyms: ["welfare", "health", "happiness", "prosperity"], category: "health", difficulty: "easy" },
+                { word: "citizen", phonetic: "/ˈsɪt.ɪ.zən/", definition: "A legally recognized member of a country", example: "She became a Canadian citizen last year.", synonyms: ["national", "subject", "resident", "inhabitant"], category: "society", difficulty: "easy" },
+                { word: "democracy", phonetic: "/dɪˈmɒk.rə.si/", definition: "A system of government where people vote", example: "Democracy gives power to the people.", synonyms: ["representative government", "self‑rule", "popular sovereignty"], category: "society", difficulty: "medium" },
+                { word: "poverty", phonetic: "/ˈpɒv.ə.ti/", definition: "The state of being extremely poor", example: "Many organizations fight poverty worldwide.", synonyms: ["destitution", "need", "hardship", "deprivation"], category: "society", difficulty: "easy" },
+                { word: "volunteer", phonetic: "/ˌvɒl.ənˈtɪər/", definition: "A person who works without being paid", example: "She volunteers at a local animal shelter.", synonyms: ["helper", "unpaid worker", "charity worker"], category: "society", difficulty: "easy" },
+                { word: "welfare", phonetic: "/ˈwel.feər/", definition: "The health, happiness, and prosperity of a person or group", example: "The government provides welfare benefits.", synonyms: ["well‑being", "social security", "assistance", "support"], category: "society", difficulty: "medium" },
+                { word: "internship", phonetic: "/ˈɪn.tɜːn.ʃɪp/", definition: "A period of work experience offered by an organization", example: "She completed a summer internship at a law firm.", synonyms: ["traineeship", "placement", "apprenticeship", "work experience"], category: "work", difficulty: "easy" },
+                { word: "negotiate", phonetic: "/nɪˈɡəʊ.ʃi.eɪt/", definition: "Discuss something to reach an agreement", example: "They are negotiating a new contract.", synonyms: ["bargain", "discuss", "mediate", "settle"], category: "work", difficulty: "medium" },
+                { word: "redundant", phonetic: "/rɪˈdʌn.dənt/", definition: "No longer employed because the job is no longer necessary", example: "He was made redundant after the factory closed.", synonyms: ["laid off", "unemployed", "jobless", "displaced"], category: "work", difficulty: "hard" },
+                { word: "occupation", phonetic: "/ˌɒk.juˈpeɪ.ʃən/", definition: "A person's job or profession", example: "Please state your occupation on the form.", synonyms: ["profession", "career", "trade", "vocation"], category: "work", difficulty: "easy" },
+                { word: "shift", phonetic: "/ʃɪft/", definition: "A set period of working time", example: "She works the night shift at the hospital.", synonyms: ["schedule", "rotation", "stint", "work period"], category: "work", difficulty: "easy" }
+            ];
+
+            const deck4 = [
+                { word: "alumni", phonetic: "/əˈlʌm.naɪ/", definition: "Graduates or former students of a school", example: "The university has a strong alumni network.", synonyms: ["graduates", "former students", "ex‑students"], category: "education", difficulty: "medium" },
+                { word: "extracurricular", phonetic: "/ˌek.strə.kəˈrɪk.jə.lər/", definition: "Activities outside the regular academic curriculum", example: "She participates in many extracurricular clubs.", synonyms: ["after‑school", "non‑academic", "voluntary"], category: "education", difficulty: "hard" },
+                { word: "scholar", phonetic: "/ˈskɒl.ər/", definition: "A person who studies a subject in great detail", example: "He is a leading scholar in medieval history.", synonyms: ["academic", "researcher", "intellectual", "expert"], category: "education", difficulty: "medium" },
+                { word: "seminar", phonetic: "/ˈsem.ɪ.nɑːr/", definition: "A small group meeting for discussion or training", example: "The seminar on climate change was very informative.", synonyms: ["workshop", "conference", "session", "symposium"], category: "education", difficulty: "easy" },
+                { word: "enroll", phonetic: "/ɪnˈrəʊl/", definition: "Officially register as a student", example: "I plan to enroll in an online course next month.", synonyms: ["register", "sign up", "join", "matriculate"], category: "education", difficulty: "easy" },
+                { word: "ecosystem", phonetic: "/ˈiː.kəʊ.sɪs.təm/", definition: "A biological community of interacting organisms", example: "Coral reefs are among the most diverse ecosystems.", synonyms: ["biome", "habitat", "environment", "ecological system"], category: "environment", difficulty: "medium" },
+                { word: "greenhouse effect", phonetic: "/ˌɡriːn.haʊs ɪˈfekt/", definition: "Trapping of the sun's warmth in the Earth's atmosphere", example: "The greenhouse effect is intensified by human activities.", synonyms: ["global warming phenomenon", "atmospheric heating"], category: "environment", difficulty: "medium" },
+                { word: "landfill", phonetic: "/ˈlænd.fɪl/", definition: "A site for disposal of waste materials", example: "Most household waste ends up in landfill.", synonyms: ["dump", "tip", "rubbish site", "disposal site"], category: "environment", difficulty: "easy" },
+                { word: "extinct", phonetic: "/ɪkˈstɪŋkt/", definition: "No longer in existence (of a species)", example: "The dodo bird is extinct.", synonyms: ["vanished", "gone", "wiped out", "dead"], category: "environment", difficulty: "easy" },
+                { word: "contaminate", phonetic: "/kənˈtæm.ɪ.neɪt/", definition: "Make something dirty or poisonous", example: "Chemicals contaminate the drinking water.", synonyms: ["pollute", "taint", "spoil", "infect"], category: "environment", difficulty: "hard" },
+                { word: "gadget", phonetic: "/ˈɡædʒ.ɪt/", definition: "A small mechanical or electronic device", example: "This kitchen gadget saves a lot of time.", synonyms: ["device", "tool", "appliance", "widget"], category: "technology", difficulty: "easy" },
+                { word: "wireless", phonetic: "/ˈwaɪə.ləs/", definition: "Using radio waves instead of wires", example: "Wireless headphones are very convenient.", synonyms: ["cordless", "radio", "Wi‑Fi", "Bluetooth"], category: "technology", difficulty: "easy" },
+                { word: "hacker", phonetic: "/ˈhæk.ər/", definition: "A person who gains unauthorized access to computer systems", example: "Hackers stole millions of passwords.", synonyms: ["cracker", "cybercriminal", "intruder"], category: "technology", difficulty: "medium" },
+                { word: "router", phonetic: "/ˈruː.tər/", definition: "A device that forwards data packets between networks", example: "The Wi‑Fi router needs to be reset.", synonyms: ["gateway", "network device", "modem (colloquial)"], category: "technology", difficulty: "medium" },
+                { word: "cloud computing", phonetic: "/ˌklaʊd kəmˈpjuː.tɪŋ/", definition: "Storing and accessing data over the internet", example: "Cloud computing reduces the need for local servers.", synonyms: ["online storage", "remote servers", "SaaS"], category: "technology", difficulty: "hard" },
+                { word: "immune", phonetic: "/ɪˈmjuːn/", definition: "Protected against a disease or infection", example: "Vaccines help your body become immune to viruses.", synonyms: ["resistant", "protected", "shielded", "exempt"], category: "health", difficulty: "medium" },
+                { word: "insomnia", phonetic: "/ɪnˈsɒm.ni.ə/", definition: "Difficulty falling or staying asleep", example: "Stress can cause insomnia.", synonyms: ["sleeplessness", "wakefulness", "restlessness"], category: "health", difficulty: "hard" },
+                { word: "rehabilitation", phonetic: "/ˌriː.həˌbɪl.ɪˈteɪ.ʃən/", definition: "The process of returning to a normal life after illness or addiction", example: "He underwent rehabilitation after the accident.", synonyms: ["recovery", "therapy", "healing", "restoration"], category: "health", difficulty: "hard" },
+                { word: "pandemic", phonetic: "/pænˈdem.ɪk/", definition: "A disease spread over a whole country or the world", example: "The COVID‑19 pandemic changed daily life.", synonyms: ["worldwide epidemic", "global outbreak", "plague"], category: "health", difficulty: "medium" },
+                { word: "sedentary", phonetic: "/ˈsed.ən.tər.i/", definition: "Involving little physical activity", example: "A sedentary lifestyle is linked to health problems.", synonyms: ["inactive", "sitting", "immobile", "desk‑bound"], category: "health", difficulty: "medium" },
+                { word: "discrimination", phonetic: "/dɪˌskrɪm.ɪˈneɪ.ʃən/", definition: "Treating people unfairly based on race, gender, etc.", example: "Laws prohibit discrimination in the workplace.", synonyms: ["prejudice", "bias", "unfairness", "intolerance"], category: "society", difficulty: "medium" },
+                { word: "refugee", phonetic: "/ˌref.juˈdʒiː/", definition: "A person forced to leave their country due to war or persecution", example: "The camp provided shelter for thousands of refugees.", synonyms: ["asylum seeker", "displaced person", "fugitive"], category: "society", difficulty: "easy" },
+                { word: "census", phonetic: "/ˈsen.səs/", definition: "An official count of the population", example: "The national census is taken every ten years.", synonyms: ["population count", "survey", "headcount"], category: "society", difficulty: "medium" },
+                { word: "urban", phonetic: "/ˈɜː.bən/", definition: "Relating to a city or town", example: "Urban areas tend to have higher living costs.", synonyms: ["city", "metropolitan", "municipal", "town"], category: "society", difficulty: "easy" },
+                { word: "integration", phonetic: "/ˌɪn.tɪˈɡreɪ.ʃən/", definition: "The act of combining or mixing with a larger group", example: "Successful integration of immigrants benefits society.", synonyms: ["inclusion", "assimilation", "incorporation", "blending"], category: "society", difficulty: "hard" },
+                { word: "resign", phonetic: "/rɪˈzaɪn/", definition: "To voluntarily leave a job", example: "She decided to resign after ten years.", synonyms: ["quit", "step down", "leave", "hand in notice"], category: "work", difficulty: "easy" },
+                { word: "colleague", phonetic: "/ˈkɒl.iːɡ/", definition: "A person you work with", example: "I discussed the idea with my colleagues.", synonyms: ["coworker", "associate", "teammate", "peer"], category: "work", difficulty: "easy" },
+                { word: "recruitment", phonetic: "/rɪˈkruːt.mənt/", definition: "The process of finding and hiring new employees", example: "The recruitment drive attracted many applicants.", synonyms: ["hiring", "staffing", "employment", "selection"], category: "work", difficulty: "medium" },
+                { word: "overtime", phonetic: "/ˈəʊ.və.taɪm/", definition: "Extra hours worked beyond the regular schedule", example: "She earns extra money by working overtime.", synonyms: ["extra hours", "additional time", "OT"], category: "work", difficulty: "easy" },
+                { word: "candidate", phonetic: "/ˈkæn.dɪ.dət/", definition: "A person applying for a job or position", example: "The candidate impressed the interview panel.", synonyms: ["applicant", "contender", "nominee", "prospect"], category: "work", difficulty: "easy" }
+            ];
+
+            const deck5 = [
+                { word: "qualification", phonetic: "/ˌkwɒl.ɪ.fɪˈkeɪ.ʃən/", definition: "An official record showing you have completed a course", example: "She has the right qualifications for the job.", synonyms: ["certificate", "credential", "diploma", "degree"], category: "education", difficulty: "easy" },
+                { word: "intellectual", phonetic: "/ˌɪn.təlˈek.tju.əl/", definition: "Relating to the ability to think and understand", example: "Reading stimulates intellectual growth.", synonyms: ["mental", "cognitive", "brainy", "scholarly"], category: "education", difficulty: "medium" },
+                { word: "mentor", phonetic: "/ˈmen.tɔːr/", definition: "An experienced person who advises and helps a less experienced one", example: "Every new teacher is assigned a mentor.", synonyms: ["guide", "coach", "advisor", "counselor"], category: "education", difficulty: "medium" },
+                { word: "plagiarize", phonetic: "/ˈpleɪ.dʒər.aɪz/", definition: "To steal someone else's work and present it as your own", example: "Students who plagiarize will be penalized.", synonyms: ["copy", "pirate", "infringe", "steal"], category: "education", difficulty: "hard" },
+                { word: "lecture", phonetic: "/ˈlek.tʃər/", definition: "A formal talk given to a large group of students", example: "The professor gave a fascinating lecture on genetics.", synonyms: ["talk", "speech", "address", "presentation"], category: "education", difficulty: "easy" },
+                { word: "wildlife", phonetic: "/ˈwaɪld.laɪf/", definition: "Animals and plants that live in natural conditions", example: "The national park is rich in wildlife.", synonyms: ["fauna", "animals", "nature", "living creatures"], category: "environment", difficulty: "easy" },
+                { word: "atmosphere", phonetic: "/ˈæt.mə.sfɪər/", definition: "The layer of gases surrounding the Earth", example: "Carbon dioxide traps heat in the atmosphere.", synonyms: ["air", "sky", "stratosphere", "ozone"], category: "environment", difficulty: "easy" },
+                { word: "degrade", phonetic: "/dɪˈɡreɪd/", definition: "To lower the quality of something, especially the environment", example: "Pollution degrades water quality.", synonyms: ["damage", "deteriorate", "spoil", "ruin"], category: "environment", difficulty: "hard" },
+                { word: "compost", phonetic: "/ˈkɒm.pɒst/", definition: "Decayed organic material used as plant fertilizer", example: "We use kitchen scraps to make compost.", synonyms: ["fertilizer", "mulch", "humus", "organic waste"], category: "environment", difficulty: "easy" },
+                { word: "emission", phonetic: "/ɪˈmɪʃ.ən/", definition: "The act of sending out gas, heat, or light", example: "Vehicle emission standards are getting stricter.", synonyms: ["discharge", "release", "output", "exhaust"], category: "environment", difficulty: "medium" },
+                { word: "browser", phonetic: "/ˈbraʊ.zər/", definition: "Software used to access the internet", example: "Chrome is the most popular web browser.", synonyms: ["web browser", "internet client", "navigator"], category: "technology", difficulty: "easy" },
+                { word: "firewall", phonetic: "/ˈfaɪə.wɔːl/", definition: "A security system that controls network traffic", example: "A firewall protects your computer from attacks.", synonyms: ["security barrier", "network guard", "safety shield"], category: "technology", difficulty: "medium" },
+                { word: "cache", phonetic: "/kæʃ/", definition: "A temporary storage area for fast data retrieval", example: "Clear your browser cache to fix loading issues.", synonyms: ["buffer", "temporary memory", "store", "reserve"], category: "technology", difficulty: "hard" },
+                { word: "bandwidth", phonetic: "/ˈbænd.wɪdθ/", definition: "The data transfer capacity of a network", example: "Video calls need high bandwidth.", synonyms: ["data rate", "capacity", "speed"], category: "technology", difficulty: "medium" },
+                { word: "open source", phonetic: "/ˌəʊ.pən ˈsɔːs/", definition: "Software with code that anyone can inspect and modify", example: "Linux is a popular open‑source operating system.", synonyms: ["free software", "public code", "collaborative"], category: "technology", difficulty: "hard" },
+                { word: "prescription", phonetic: "/prɪˈskrɪp.ʃən/", definition: "A doctor's written order for medicine", example: "You need a prescription for antibiotics.", synonyms: ["Rx", "doctor's order", "medical order"], category: "health", difficulty: "easy" },
+                { word: "anxiety", phonetic: "/æŋˈzaɪ.ə.ti/", definition: "A feeling of worry or nervousness", example: "Exam anxiety is common among students.", synonyms: ["worry", "stress", "nervousness", "unease"], category: "health", difficulty: "medium" },
+                { word: "immunize", phonetic: "/ˈɪm.jə.naɪz/", definition: "To give a vaccine to protect against disease", example: "Children are immunized against measles.", synonyms: ["vaccinate", "inoculate", "protect", "shield"], category: "health", difficulty: "medium" },
+                { word: "infection", phonetic: "/ɪnˈfek.ʃən/", definition: "The invasion of the body by harmful microorganisms", example: "Wash your hands to prevent infection.", synonyms: ["disease", "contamination", "virus", "bacteria"], category: "health", difficulty: "easy" },
+                { word: "therapist", phonetic: "/ˈθer.ə.pɪst/", definition: "A person trained to treat physical or mental disorders", example: "She sees a therapist to manage her stress.", synonyms: ["counselor", "psychologist", "physiotherapist", "healer"], category: "health", difficulty: "medium" },
+                { word: "ethnicity", phonetic: "/eθˈnɪs.ə.ti/", definition: "A person's cultural background or race", example: "The survey asks about your ethnicity.", synonyms: ["race", "cultural identity", "background", "origin"], category: "society", difficulty: "medium" },
+                { word: "authority", phonetic: "/ɔːˈθɒr.ə.ti/", definition: "The power or right to give orders", example: "The police have the authority to enforce laws.", synonyms: ["power", "control", "jurisdiction", "command"], category: "society", difficulty: "medium" },
+                { word: "corruption", phonetic: "/kəˈrʌp.ʃən/", definition: "Dishonest or illegal behavior by people in power", example: "Corruption undermines trust in government.", synonyms: ["bribery", "fraud", "dishonesty", "graft"], category: "society", difficulty: "hard" },
+                { word: "demonstration", phonetic: "/ˌdem.ənˈstreɪ.ʃən/", definition: "A public meeting or march to protest or support something", example: "Thousands joined the climate demonstration.", synonyms: ["protest", "rally", "march", "parade"], category: "society", difficulty: "easy" },
+                { word: "heritage", phonetic: "/ˈher.ɪ.tɪdʒ/", definition: "The traditions and history of a group", example: "The city is proud of its cultural heritage.", synonyms: ["legacy", "tradition", "inheritance", "history"], category: "society", difficulty: "easy" },
+                { word: "perk", phonetic: "/pɜːk/", definition: "An extra benefit given to employees", example: "Free gym membership is a great perk.", synonyms: ["benefit", "bonus", "privilege", "advantage"], category: "work", difficulty: "easy" },
+                { word: "flexible", phonetic: "/ˈflek.sə.bəl/", definition: "Able to change or be changed easily", example: "She enjoys flexible working hours.", synonyms: ["adaptable", "adjustable", "variable", "versatile"], category: "work", difficulty: "easy" },
+                { word: "outsource", phonetic: "/ˈaʊt.sɔːs/", definition: "Obtain goods or services from an outside supplier", example: "The company outsources its IT support.", synonyms: ["contract out", "delegate", "externalize", "farm out"], category: "work", difficulty: "hard" },
+                { word: "probation", phonetic: "/prəˈbeɪ.ʃən/", definition: "A trial period for a new employee", example: "She is on a three‑month probation period.", synonyms: ["trial period", "test phase", "evaluation time"], category: "work", difficulty: "medium" },
+                { word: "shift", phonetic: "/ʃɪft/", definition: "A scheduled period of work", example: "He works the early shift.", synonyms: ["working hours", "roster", "rotation", "duty"], category: "work", difficulty: "easy" }
+            ];
+
+            const allDecks = [deck1, deck2, deck3, deck4, deck5];
+
+            // ─────────────────────────────────────
+            // 72‑HOUR AUTO‑UPDATE LOGIC
+            // ─────────────────────────────────────
+            const UPDATE_INTERVAL = 72 * 60 * 60 * 1000; // 72 hours in milliseconds
+            const EPOCH = new Date('2024-01-01T00:00:00Z').getTime(); // arbitrary reference
+
+            function getCurrentDeckIndex() {
+                const now = Date.now();
+                const intervals = Math.floor((now - EPOCH) / UPDATE_INTERVAL);
+                return intervals % allDecks.length;
+            }
+
+            function getNextUpdateTime() {
+                const now = Date.now();
+                const intervalsSinceEpoch = Math.floor((now - EPOCH) / UPDATE_INTERVAL);
+                const nextIntervalStart = EPOCH + (intervalsSinceEpoch + 1) * UPDATE_INTERVAL;
+                return nextIntervalStart;
+            }
+
+            // ─────────────────────────────────────
+            // LOAD ACTIVE DECK
+            // ─────────────────────────────────────
+            let vocabularyData = allDecks[getCurrentDeckIndex()];
+            let currentDeckIndex = getCurrentDeckIndex();
+
+            // Update deck number display
+            document.getElementById('deckNumber').textContent = currentDeckIndex + 1;
+
+            // Countdown timer
+            function updateCountdown() {
+                const now = Date.now();
+                const nextUpdate = getNextUpdateTime();
+                const diff = nextUpdate - now;
+                if (diff <= 0) {
+                    // Refresh the page when the update time arrives
+                    location.reload();
+                    return;
+                }
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('countdown').textContent =
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+
+            // ─────────────────────────────────────
+            // REST OF THE APP (unchanged logic)
+            // ─────────────────────────────────────
+            let currentCardIndex = 0;
+            let filteredWords = [...vocabularyData];
+            let activeCategory = 'all';
+            let masteredWords = new Set(JSON.parse(localStorage.getItem('ieltsMastered') || '[]'));
+            let isFlipped = false;
+            let quizActive = false;
+            let quizWord = null;
+            let quizAnswered = false;
+
+            const flashcardInner = document.getElementById('flashcardInner');
+            const flashcardContainer = document.getElementById('flashcardContainer');
+            const flashcardWord = document.getElementById('flashcardWord');
+            const flashcardPhonetic = document.getElementById('flashcardPhonetic');
+            const flashcardDefinition = document.getElementById('flashcardDefinition');
+            const flashcardExample = document.getElementById('flashcardExample');
+            const flashcardSynonyms = document.getElementById('flashcardSynonyms');
+            const cardCategoryBadge = document.getElementById('cardCategoryBadge');
+            const cardCounter = document.getElementById('cardCounter');
+            const wordTableBody = document.getElementById('wordTableBody');
+            const searchInput = document.getElementById('searchInput');
+            const categoryTabs = document.getElementById('categoryTabs');
+            const totalWordsEl = document.getElementById('totalWords');
+            const masteredCountEl = document.getElementById('masteredCount');
+            const learningCountEl = document.getElementById('learningCount');
+            const quizScoreEl = document.getElementById('quizScore');
+            const filteredCountEl = document.getElementById('filteredCount');
+            const emptyState = document.getElementById('emptyState');
+            const quizSection = document.getElementById('quizSection');
+            const quizWordEl = document.getElementById('quizWord');
+            const quizOptionsEl = document.getElementById('quizOptions');
+            const quizFeedback = document.getElementById('quizFeedback');
+            const nextQuizBtn = document.getElementById('nextQuizBtn');
+            const toast = document.getElementById('toast');
+
+            let toastTimer;
+            function showToast(message) {
+                clearTimeout(toastTimer);
+                toast.textContent = message;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+            }
+
+            function getFilteredWords() {
+                let words = [...vocabularyData];
+                if (activeCategory !== 'all') {
+                    words = words.filter(w => w.category === activeCategory);
+                }
+                const query = searchInput.value.trim().toLowerCase();
+                if (query) {
+                    words = words.filter(w =>
+                        w.word.toLowerCase().includes(query) ||
+                        w.definition.toLowerCase().includes(query) ||
+                        w.synonyms.some(s => s.toLowerCase().includes(query)) ||
+                        w.category.toLowerCase().includes(query)
+                    );
+                }
+                return words;
+            }
+
+            function applyFilters() {
+                filteredWords = getFilteredWords();
+                currentCardIndex = 0;
+                isFlipped = false;
+                flashcardInner.classList.remove('flipped');
+                if (filteredWords.length === 0) currentCardIndex = -1;
+                updateFlashcard();
+                updateWordTable();
+                updateStats();
+            }
+
+            function updateFlashcard() {
+                if (filteredWords.length === 0 || currentCardIndex < 0) {
+                    flashcardWord.textContent = 'No words';
+                    flashcardPhonetic.textContent = '';
+                    flashcardDefinition.textContent = 'Try a different filter';
+                    flashcardExample.textContent = '';
+                    flashcardSynonyms.innerHTML = '';
+                    cardCategoryBadge.textContent = '---';
+                    cardCounter.textContent = '0 / 0';
+                    return;
+                }
+                if (currentCardIndex >= filteredWords.length) currentCardIndex = 0;
+                const word = filteredWords[currentCardIndex];
+                flashcardWord.textContent = word.word;
+                flashcardPhonetic.textContent = word.phonetic;
+                flashcardDefinition.textContent = word.definition;
+                flashcardExample.textContent = `"${word.example}"`;
+                flashcardSynonyms.innerHTML = word.synonyms.map(s => `<span class="synonym-tag">${s}</span>`).join('');
+                cardCategoryBadge.textContent = word.category.charAt(0).toUpperCase() + word.category.slice(1);
+                cardCounter.textContent = `${currentCardIndex + 1} / ${filteredWords.length}`;
+                isFlipped = false;
+                flashcardInner.classList.remove('flipped');
+            }
+
+            function flipCard() {
+                if (filteredWords.length === 0 || currentCardIndex < 0) return;
+                isFlipped = !isFlipped;
+                flashcardInner.classList.toggle('flipped', isFlipped);
+            }
+
+            function nextCard() {
+                if (filteredWords.length === 0) return;
+                isFlipped = false;
+                flashcardInner.classList.remove('flipped');
+                currentCardIndex = (currentCardIndex + 1) % filteredWords.length;
+                updateFlashcard();
+            }
+
+            function prevCard() {
+                if (filteredWords.length === 0) return;
+                isFlipped = false;
+                flashcardInner.classList.remove('flipped');
+                currentCardIndex = (currentCardIndex - 1 + filteredWords.length) % filteredWords.length;
+                updateFlashcard();
+            }
+
+            function shuffleCard() {
+                if (filteredWords.length <= 1) return;
+                isFlipped = false;
+                flashcardInner.classList.remove('flipped');
+                for (let i = filteredWords.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [filteredWords[i], filteredWords[j]] = [filteredWords[j], filteredWords[i]];
+                }
+                currentCardIndex = 0;
+                updateFlashcard();
+                updateWordTable();
+                showToast('🔀 Cards shuffled!');
+            }
+
+            function toggleMastered() {
+                if (filteredWords.length === 0 || currentCardIndex < 0) return;
+                const word = filteredWords[currentCardIndex];
+                const key = word.word.toLowerCase();
+                if (masteredWords.has(key)) {
+                    masteredWords.delete(key);
+                    showToast(`"${word.word}" marked as learning`);
+                } else {
+                    masteredWords.add(key);
+                    showToast(`✅ "${word.word}" mastered!`);
+                }
+                saveMastered();
+                updateFlashcard();
+                updateWordTable();
+                updateStats();
+            }
+
+            function resetMastered() {
+                if (masteredWords.size === 0) { showToast('No words to reset'); return; }
+                if (confirm('Reset all mastered words? This cannot be undone.')) {
+                    masteredWords.clear();
+                    saveMastered();
+                    updateFlashcard();
+                    updateWordTable();
+                    updateStats();
+                    showToast('🔄 Progress reset');
+                }
+            }
+
+            function saveMastered() {
+                localStorage.setItem('ieltsMastered', JSON.stringify([...masteredWords]));
+            }
+
+            function isMastered(wordObj) {
+                return masteredWords.has(wordObj.word.toLowerCase());
+            }
+
+            function updateWordTable() {
+                wordTableBody.innerHTML = '';
+                if (filteredWords.length === 0) {
+                    emptyState.style.display = 'block';
+                    filteredCountEl.textContent = '0 words';
+                } else {
+                    emptyState.style.display = 'none';
+                    filteredCountEl.textContent = `Showing ${filteredWords.length} word${filteredWords.length !== 1 ? 's' : ''}`;
+                }
+                filteredWords.forEach((w, idx) => {
+                    const tr = document.createElement('tr');
+                    const mastered = isMastered(w);
+                    const diffDots = { easy: 'dot-easy', medium: 'dot-medium', hard: 'dot-hard' };
+                    const dotClass = diffDots[w.difficulty] || 'dot-medium';
+                    const statusIcon = mastered ? '✅' : '📖';
+                    const statusText = mastered ? 'Mastered' : 'Learning';
+                    tr.innerHTML = `
+                        <td class="word-cell">${w.word}</td>
+                        <td>${w.definition}</td>
+                        <td><span class="cat-cell">${w.category}</span></td>
+                        <td><span class="difficulty-dot ${dotClass}"></span> ${w.difficulty}</td>
+                        <td>${statusIcon} ${statusText}</td>
+                    `;
+                    tr.addEventListener('click', () => {
+                        currentCardIndex = idx;
+                        isFlipped = false;
+                        flashcardInner.classList.remove('flipped');
+                        updateFlashcard();
+                        flashcardContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+                    wordTableBody.appendChild(tr);
+                });
+            }
+
+            function updateStats() {
+                totalWordsEl.textContent = vocabularyData.length;
+                const masteredTotal = vocabularyData.filter(w => isMastered(w)).length;
+                masteredCountEl.textContent = masteredTotal;
+                learningCountEl.textContent = vocabularyData.length - masteredTotal;
+                filteredCountEl.textContent = `Showing ${filteredWords.length} word${filteredWords.length !== 1 ? 's' : ''}`;
+            }
+
+            function generateQuiz() {
+                const pool = activeCategory === 'all' ? [...vocabularyData] : vocabularyData.filter(w => w.category === activeCategory);
+                if (pool.length < 4) { showToast('Need at least 4 words for a quiz'); return; }
+                quizWord = pool[Math.floor(Math.random() * pool.length)];
+                const distractors = pool.filter(w => w.word !== quizWord.word).sort(() => Math.random() - 0.5).slice(0, 3);
+                const options = [quizWord, ...distractors].sort(() => Math.random() - 0.5);
+                quizWordEl.textContent = quizWord.word;
+                quizOptionsEl.innerHTML = '';
+                quizFeedback.textContent = '';
+                nextQuizBtn.style.display = 'none';
+                quizAnswered = false;
+                options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quiz-option';
+                    btn.textContent = opt.definition;
+                    btn.addEventListener('click', () => handleQuizAnswer(opt, btn));
+                    quizOptionsEl.appendChild(btn);
+                });
+                quizSection.style.display = 'block';
+                quizActive = true;
+                quizScoreEl.textContent = '...';
+                quizSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            function handleQuizAnswer(selected, clickedBtn) {
+                if (quizAnswered) return;
+                quizAnswered = true;
+                const allBtns = quizOptionsEl.querySelectorAll('.quiz-option');
+                if (selected.word === quizWord.word) {
+                    clickedBtn.classList.add('correct');
+                    quizFeedback.textContent = '✅ Correct! Well done!';
+                    quizFeedback.style.color = '#065f46';
+                    quizScoreEl.textContent = '✅ Correct';
+                    quizScoreEl.style.color = '#10b981';
+                } else {
+                    clickedBtn.classList.add('wrong');
+                    quizFeedback.textContent = `❌ Incorrect. The answer is: "${quizWord.definition}"`;
+                    quizFeedback.style.color = '#991b1b';
+                    quizScoreEl.textContent = '❌ Incorrect';
+                    quizScoreEl.style.color = '#ef4444';
+                    allBtns.forEach(b => { if (b.textContent === quizWord.definition) b.classList.add('correct'); });
+                }
+                allBtns.forEach(b => b.style.pointerEvents = 'none');
+                nextQuizBtn.style.display = 'inline-block';
+            }
+
+            function closeQuiz() {
+                quizSection.style.display = 'none';
+                quizActive = false;
+                quizWord = null;
+                quizAnswered = false;
+                quizScoreEl.textContent = '-';
+                quizScoreEl.style.color = '';
+            }
+
+            flashcardContainer.addEventListener('click', flipCard);
+            document.getElementById('prevCardBtn').addEventListener('click', prevCard);
+            document.getElementById('nextCardBtn').addEventListener('click', nextCard);
+            document.getElementById('shuffleBtn').addEventListener('click', shuffleCard);
+            document.getElementById('markMasteredBtn').addEventListener('click', toggleMastered);
+            document.getElementById('resetMasteredBtn').addEventListener('click', resetMastered);
+            document.getElementById('startQuizBtn').addEventListener('click', generateQuiz);
+            document.getElementById('closeQuizBtn').addEventListener('click', closeQuiz);
+            document.getElementById('nextQuizBtn').addEventListener('click', generateQuiz);
+
+            searchInput.addEventListener('input', applyFilters);
+            categoryTabs.addEventListener('click', (e) => {
+                const tab = e.target.closest('.cat-tab');
+                if (!tab) return;
+                document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                activeCategory = tab.dataset.category;
+                applyFilters();
+                if (quizActive) closeQuiz();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT') return;
+                if (e.key === 'ArrowRight') nextCard();
+                if (e.key === 'ArrowLeft') prevCard();
+                if (e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); flipCard(); }
+                if (e.key === 'm' && !e.ctrlKey && !e.metaKey) toggleMastered();
+                if (e.key === 's' && !e.ctrlKey && !e.metaKey) shuffleCard();
+            });
+
+            function init() {
+                applyFilters();
+                updateStats();
+                updateFlashcard();
+                updateWordTable();
+                setTimeout(() => showToast('💡 Tip: Use ← → arrow keys, Space to flip'), 800);
+            }
+            init();
+        })();
+    </script>
+</body>
+</html>
